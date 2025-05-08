@@ -1,3 +1,4 @@
+// === src/subscriptions/subscriptions.service.ts ===
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,11 +9,55 @@ import { User } from '../users/user.entity';
 export class SubscriptionsService {
   constructor(
     @InjectRepository(Subscription)
-    private subscriptionRepo: Repository<Subscription>,
+    private readonly subscriptionRepo: Repository<Subscription>,
 
     @InjectRepository(User)
-    private userRepo: Repository<User>,
+    private readonly userRepo: Repository<User>,
   ) {}
+
+  async isUserSubscribed(userId: number): Promise<boolean> {
+    const today = new Date();
+    const sub = await this.subscriptionRepo.findOne({
+      where: {
+        user: { id: userId },
+        startDate: { lte: today },
+        endDate: { gte: today },
+      },
+      relations: ['user'],
+    });
+    return !!sub;
+  }
+
+  async canDownload(userId: number): Promise<boolean> {
+    const today = new Date();
+    const subscription = await this.subscriptionRepo.findOne({
+      where: {
+        user: { id: userId },
+        startDate: { lte: today },
+        endDate: { gte: today },
+      },
+      relations: ['user'],
+    });
+
+    return subscription ? subscription.downloadsUsed < 5 : false;
+  }
+
+  async registerDownload(userId: number): Promise<void> {
+    const today = new Date();
+    const subscription = await this.subscriptionRepo.findOne({
+      where: {
+        user: { id: userId },
+        startDate: { lte: today },
+        endDate: { gte: today },
+      },
+      relations: ['user'],
+    });
+
+    if (subscription) {
+      subscription.incrementDownloads();
+      await this.subscriptionRepo.save(subscription);
+    }
+  }
 
   async createSubscription(userId: number, type: 'monthly' | 'semiannual' | 'annual') {
     const user = await this.userRepo.findOneBy({ id: userId });

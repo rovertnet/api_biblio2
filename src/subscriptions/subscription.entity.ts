@@ -10,15 +10,21 @@ export class Subscription {
   @ManyToOne(() => User, (user) => user.subscriptions)
   user: User;
 
-  @Column()
-  type: 'monthly' | 'semiannual' | 'annual';
-
-  @Column({ type: 'datetime' })
+  @Column({ type: 'date' })
   startDate: Date;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'date' })
   endDate: Date;
 
   @Column({ default: 0 })
   downloadsUsed: number;
+
+  isActive(): boolean {
+    const today = new Date();
+    return this.startDate <= today && this.endDate >= today;
+  }
+
+  incrementDownloads(): void {
+    this.downloadsUsed++;
+  }
 }
