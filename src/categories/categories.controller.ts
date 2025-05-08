@@ -1,7 +1,6 @@
 // src/categories/categories.controller.ts
 import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { JwtAuthGuard } from '../cammon/guards/jwt-auth.guard';
 import { RolesGuard } from '../cammon/guards/roles.guard';
 import { Roles } from '../cammon/decorators/roles.decorator';
