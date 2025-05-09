@@ -1,7 +1,7 @@
 // === src/subscriptions/subscriptions.service.ts ===
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { Subscription } from './subscription.entity';
 import { User } from '../users/user.entity';
 
@@ -20,8 +20,8 @@ export class SubscriptionsService {
     const sub = await this.subscriptionRepo.findOne({
       where: {
         user: { id: userId },
-        startDate: { lte: today },
-        endDate: { gte: today },
+        startDate: LessThanOrEqual(today),
+        endDate: MoreThanOrEqual(today),
       },
       relations: ['user'],
     });
@@ -33,8 +33,8 @@ export class SubscriptionsService {
     const subscription = await this.subscriptionRepo.findOne({
       where: {
         user: { id: userId },
-        startDate: { lte: today },
-        endDate: { gte: today },
+        startDate: LessThanOrEqual(today),
+        endDate: MoreThanOrEqual(today),
       },
       relations: ['user'],
     });
@@ -47,8 +47,8 @@ export class SubscriptionsService {
     const subscription = await this.subscriptionRepo.findOne({
       where: {
         user: { id: userId },
-        startDate: { lte: today },
-        endDate: { gte: today },
+        startDate: LessThanOrEqual(today),
+        endDate: MoreThanOrEqual(today),
       },
       relations: ['user'],
     });
