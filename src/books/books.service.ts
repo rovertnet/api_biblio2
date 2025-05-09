@@ -1,8 +1,9 @@
+// === src/books/books.service.ts ===
 import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './book.entity';
-import { createReadStream, existsSync } from 'fs';
+import { createReadStream } from 'fs';
 import { join } from 'path';
 
 @Injectable()
@@ -12,26 +13,14 @@ export class BooksService {
     private readonly bookRepo: Repository<Book>,
   ) {}
 
-  async read(id: number): Promise<Book> {
-    const book = await this.bookRepo.findOneBy({ id });
-    if (!book) {
-      throw new NotFoundException('Livre non trouvé');
-    }
-    return book;
-  }
-
   async download(id: number): Promise<StreamableFile> {
     const book = await this.bookRepo.findOneBy({ id });
-    if (!book || !book.filePath) {
-      throw new NotFoundException('Fichier introuvable');
+    if (!book) {
+      throw new NotFoundException('Book not found');
     }
 
-    const fullPath = join(__dirname, '..', '..', 'uploads', book.filePath);
-    if (!existsSync(fullPath)) {
-      throw new NotFoundException('Le fichier n\'existe pas sur le serveur');
-    }
-
-    const fileStream = createReadStream(fullPath);
-    return new StreamableFile(fileStream);
+    const filePath = join(__dirname, '../../uploads/books', book.fileName);
+    const file = createReadStream(filePath);
+    return new StreamableFile(file);
   }
 }
