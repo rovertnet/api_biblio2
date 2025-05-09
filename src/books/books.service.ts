@@ -7,9 +7,8 @@ import { createReadStream } from 'fs';
 import { join } from 'path';
 import { CreateBookDto } from './dto/create-book.dto';
 
-
 @Injectable()
-export class BooksService { // ✅ assure-toi que `export` est présent ici
+export class BooksService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepo: Repository<Book>,
