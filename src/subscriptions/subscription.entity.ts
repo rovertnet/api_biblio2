@@ -19,6 +19,9 @@ export class Subscription {
   @Column({ default: 0 })
   downloadsUsed: number;
 
+  @Column()
+  type: 'monthly' | 'semiannual' | 'annual';
+
   isActive(): boolean {
     const today = new Date();
     return this.startDate <= today && this.endDate >= today;
