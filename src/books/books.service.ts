@@ -7,7 +7,7 @@ import { createReadStream } from 'fs';
 import { join } from 'path';
 
 @Injectable()
-export class BooksService {
+export class BooksService { // ✅ assure-toi que `export` est présent ici
   constructor(
     @InjectRepository(Book)
     private readonly bookRepo: Repository<Book>,
@@ -22,5 +22,14 @@ export class BooksService {
     const filePath = join(__dirname, '../../uploads/books', book.fileName);
     const file = createReadStream(filePath);
     return new StreamableFile(file);
+  }
+
+  async saveUploadedBook(file: Express.Multer.File) {
+    const book = this.bookRepo.create({
+      title: file.originalname,
+      author: 'Unknown',
+      fileName: file.filename,
+    });
+    return this.bookRepo.save(book);
   }
 }
