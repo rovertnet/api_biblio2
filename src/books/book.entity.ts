@@ -20,4 +20,7 @@ export class Book {
 
   @Column({ default: 0 })
   totalPages: number;
+
+  @Column({ nullable: true })
+  filePath: string;
 }

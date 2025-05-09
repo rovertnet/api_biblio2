@@ -1,66 +1,37 @@
-// === src/books/books.service.ts ===
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './book.entity';
+import { createReadStream, existsSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class BooksService {
   constructor(
     @InjectRepository(Book)
-    private bookRepo: Repository<Book>,
-  ) {}// === src/books/books.service.ts ===
-  import { Injectable, NotFoundException } from '@nestjs/common';
-  import { InjectRepository } from '@nestjs/typeorm';
-  import { Repository } from 'typeorm';
-  import { Book } from './book.entity';
-  
-  @Injectable()
-  export class BooksService {
-    constructor(
-      @InjectRepository(Book)
-      private readonly bookRepo: Repository<Book>,
-    ) {}
-  
-    async read(id: number) {
-      const book = await this.bookRepo.findOneBy({ id });
-      if (!book) {
-        throw new NotFoundException('Livre non trouvé');
-      }
-      return book;
-    }
-  
-    async download(id: number) {
-      const book = await this.bookRepo.findOneBy({ id });
-      if (!book) {
-        throw new NotFoundException('Livre non trouvé');
-      }
-  
-      // Simule le téléchargement du livre
-      return { message: `Livre "${book.title}" téléchargé.` };
-    }
-  }
-  
+    private readonly bookRepo: Repository<Book>,
+  ) {}
 
-  findAll() {
-    return this.bookRepo.find();
-  }
-
-  async findReadable(id: number, isSubscribed: boolean) {
+  async read(id: number): Promise<Book> {
     const book = await this.bookRepo.findOneBy({ id });
-    if (!book) throw new Error('Book not found');
+    if (!book) {
+      throw new NotFoundException('Livre non trouvé');
+    }
+    return book;
+  }
 
-    if (!isSubscribed) {
-      return {
-        ...book,
-        readablePages: 5,
-        fileUrl: undefined,
-      };
+  async download(id: number): Promise<StreamableFile> {
+    const book = await this.bookRepo.findOneBy({ id });
+    if (!book || !book.filePath) {
+      throw new NotFoundException('Fichier introuvable');
     }
 
-    return {
-      ...book,
-      readablePages: book.totalPages,
-    };
+    const fullPath = join(__dirname, '..', '..', 'uploads', book.filePath);
+    if (!existsSync(fullPath)) {
+      throw new NotFoundException('Le fichier n\'existe pas sur le serveur');
+    }
+
+    const fileStream = createReadStream(fullPath);
+    return new StreamableFile(fileStream);
   }
 }
