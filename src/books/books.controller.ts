@@ -10,6 +10,7 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -20,7 +21,6 @@ import { RolesGuard } from '../cammon/guards/roles.guard';
 import { Roles } from '../cammon/decorators/roles.decorator';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Response, Request } from 'express';
-import { Body } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 
 @Controller('books')
@@ -59,7 +59,10 @@ export class BooksController {
       }),
     }),
   )
-  async uploadBook(@UploadedFile() file: Express.Multer.File) {
-    return this.booksService.saveUploadedBook(file);
+  async uploadBook(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createBookDto: CreateBookDto,
+  ) {
+    return this.booksService.saveUploadedBook(file, createBookDto);
   }
 }

@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Book } from './book.entity';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { CreateBookDto } from './dto/create-book.dto';
+
 
 @Injectable()
 export class BooksService { // ✅ assure-toi que `export` est présent ici
@@ -24,12 +26,12 @@ export class BooksService { // ✅ assure-toi que `export` est présent ici
     return new StreamableFile(file);
   }
 
-  async saveUploadedBook(file: Express.Multer.File) {
+  async saveUploadedBook(file: Express.Multer.File, dto: CreateBookDto) {
     const book = this.bookRepo.create({
-      title: file.originalname,
-      author: 'Unknown',
+      title: dto.title,
+      author: dto.author,
       fileName: file.filename,
-    } as Partial<Book>); // ✅ Ajoute cette annotation
+    });
     return this.bookRepo.save(book);
   }
 }
