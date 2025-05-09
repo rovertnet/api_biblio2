@@ -85,4 +85,16 @@ export class SubscriptionsService {
       relations: ['user'],
     });
   }
+
+  async enforceDownloadAccess(userId: number): Promise<void> {
+    const today = new Date();
+    const activeSubscription = await this.subscriptionRepo.findOne({
+      where: {
+        user: { id: userId },
+        startDate: LessThanOrEqual(today),
+        endDate: MoreThanOrEqual(today),
+      },
+      relations: ['user'],
+    });
 }
+

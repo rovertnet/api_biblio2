@@ -29,7 +29,7 @@ export class BooksService { // ✅ assure-toi que `export` est présent ici
       title: file.originalname,
       author: 'Unknown',
       fileName: file.filename,
-    });
+    } as Partial<Book>); // ✅ Ajoute cette annotation
     return this.bookRepo.save(book);
   }
 }

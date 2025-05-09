@@ -20,6 +20,8 @@ import { RolesGuard } from '../cammon/guards/roles.guard';
 import { Roles } from '../cammon/decorators/roles.decorator';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Response, Request } from 'express';
+import { Body } from '@nestjs/common';
+import { CreateBookDto } from './dto/create-book.dto';
 
 @Controller('books')
 export class BooksController {
