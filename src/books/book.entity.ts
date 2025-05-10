@@ -22,5 +22,5 @@ export class Book {
   totalPages: number;
 
   @Column({ nullable: true })
-  filePath: string;
+  fileName: string;
 }
