@@ -96,5 +96,15 @@ export class SubscriptionsService {
       },
       relations: ['user'],
     });
+  
+    if (!activeSubscription) {
+      throw new NotFoundException('No active subscription found for this user');
+    }
+  
+    if (activeSubscription.downloadsUsed >= 5) {
+      throw new NotFoundException('Download limit reached for current subscription');
+    }
+  }
+  
 }
 

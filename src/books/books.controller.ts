@@ -22,6 +22,8 @@ import { Roles } from '../cammon/decorators/roles.decorator';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Response, Request } from 'express';
 import { CreateBookDto } from './dto/create-book.dto';
+import { Express } from 'express'; // ajoute ceci si ce n’est pas déjà fait
+
 
 @Controller('books')
 export class BooksController {
