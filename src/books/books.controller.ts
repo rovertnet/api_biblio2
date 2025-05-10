@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Body,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -22,8 +23,6 @@ import { Roles } from '../cammon/decorators/roles.decorator';
 import { SubscriptionsService } from '../subscriptions/subscriptions.service';
 import { Response, Request } from 'express';
 import { CreateBookDto } from './dto/create-book.dto';
-import { Express } from 'express'; // ajoute ceci si ce n’est pas déjà fait
-
 
 @Controller('books')
 export class BooksController {
@@ -43,6 +42,7 @@ export class BooksController {
     await this.subscriptionsService.enforceDownloadAccess(user.id);
     const file = await this.booksService.download(id);
     await this.subscriptionsService.registerDownload(user.id);
+    await this.booksService.logDownload(user.id, id); // Log into history
     return file;
   }
 
@@ -66,5 +66,37 @@ export class BooksController {
     @Body() createBookDto: CreateBookDto,
   ) {
     return this.booksService.saveUploadedBook(file, createBookDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/read')
+  async logReading(
+    @Param('id', ParseIntPipe) bookId: number,
+    @Req() req: Request,
+  ) {
+    const user = req.user as { id: number };
+    return this.booksService.logReading(user.id, bookId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('readings')
+  async getUserReadings(
+    @Req() req: Request,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ) {
+    const user = req.user as { id: number };
+    return this.booksService.getReadingsByUser(user.id, parseInt(page), parseInt(limit));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('downloads')
+  async getUserDownloads(
+    @Req() req: Request,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ) {
+    const user = req.user as { id: number };
+    return this.booksService.getDownloadsByUser(user.id, parseInt(page), parseInt(limit));
   }
 }
