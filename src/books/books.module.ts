@@ -5,9 +5,14 @@ import { BooksService } from './books.service';
 import { BooksController } from './books.controller';
 import { Book } from './book.entity';
 import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
+import { DownloadHistory } from '../history/download-history.entity';
+import { ReadingHistory } from '../reading/reading-history.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Book]), SubscriptionsModule],
+  imports: [
+    TypeOrmModule.forFeature([Book, DownloadHistory, ReadingHistory]),
+    SubscriptionsModule,
+  ],
   controllers: [BooksController],
   providers: [BooksService],
 })
