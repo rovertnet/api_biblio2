@@ -1,5 +1,5 @@
 // === src/auth/auth.service.ts ===
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,6 +17,11 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto): Promise<{ access_token: string }> {
+    const existingUser = await this.userRepo.findOne({ where: { email: dto.email } });
+    if (existingUser) {
+      throw new BadRequestException('Email already in use');
+    }
+  
     const hashed = await bcrypt.hash(dto.password, 10);
     const user = this.userRepo.create({ ...dto, password: hashed });
     await this.userRepo.save(user);
