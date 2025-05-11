@@ -68,6 +68,14 @@ export class BooksController {
     return this.booksService.saveUploadedBook(file, createBookDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Post('books')
+  async createBook(@Body() createBookDto: CreateBookDto) {
+    return this.booksService.create(createBookDto);
+  }
+
+
   @UseGuards(JwtAuthGuard)
   @Post(':id/read')
   async logReading(

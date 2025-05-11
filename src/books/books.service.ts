@@ -42,6 +42,11 @@ export class BooksService {
     return this.bookRepo.save(book);
   }
 
+  async create(createBookDto: CreateBookDto) {
+    const book = this.bookRepo.create(createBookDto);
+    return this.bookRepo.save(book);
+  }
+  
   async logDownload(userId: number, bookId: number) {
     const history = this.historyRepo.create({
       userId,
