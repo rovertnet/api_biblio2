@@ -17,5 +17,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": [
+    "src/**/*.ts"   // Inclut tous les fichiers .ts dans le dossier src
+  ],
+  "exclude": [
+    "node_modules",  // Exclut le dossier node_modules
+    "dist"           // Exclut le dossier dist généré
+  ]
 }
