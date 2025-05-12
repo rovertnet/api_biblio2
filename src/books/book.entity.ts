@@ -1,5 +1,6 @@
 // === src/books/book.entity.ts ===
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Category } from '../categories/category.entity';
 
 @Entity('books')
 export class Book {
@@ -23,4 +24,7 @@ export class Book {
 
   @Column({ nullable: true })
   fileName: string;
+
+  @ManyToOne(() => Category, (category) => category.books, { eager: true })
+  category: Category;
 }
