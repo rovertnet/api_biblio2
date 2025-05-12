@@ -22,6 +22,47 @@ export class BooksService {
     private readonly readingRepo: Repository<ReadingHistory>,
   ) {}
 
+  async findAll(
+    keyword: string,
+    categoryId?: number,
+    page = 1,
+    limit = 10,
+    sortBy: 'title' | 'author' | 'createdAt' = 'createdAt',
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+  ) {
+    const skip = (page - 1) * limit;
+
+    const query = this.bookRepo
+      .createQueryBuilder('book')
+      .leftJoinAndSelect('book.category', 'category')
+      .skip(skip)
+      .take(limit);
+
+    if (keyword) {
+      query.andWhere('(book.title ILIKE :keyword OR book.author ILIKE :keyword)', {
+        keyword: `%${keyword}%`,
+      });
+    }
+
+    if (categoryId) {
+      query.andWhere('book.categoryId = :categoryId', { categoryId });
+    }
+
+    // tri dynamique
+    query.orderBy(`book.${sortBy}`, sortOrder);
+
+    const [data, total] = await query.getManyAndCount();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+
   async download(id: number): Promise<StreamableFile> {
     const book = await this.bookRepo.findOneBy({ id });
     if (!book) {
