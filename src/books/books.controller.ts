@@ -32,6 +32,26 @@ export class BooksController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get()
+  async findAllBooks(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('keyword') keyword = '',
+    @Query('categoryId') categoryId?: string,
+    @Query('sortBy') sortBy: 'title' | 'author' | 'createdAt' = 'createdAt',
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC' = 'DESC',
+  ) {
+    return this.booksService.findAll(
+      keyword,
+      categoryId ? parseInt(categoryId) : undefined,
+      parseInt(page),
+      parseInt(limit),
+      sortBy,
+      sortOrder,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id/download')
   async download(
     @Param('id', ParseIntPipe) id: number,
