@@ -111,7 +111,7 @@ export class BooksController {
   async getUserReadings(
     @Req() req: Request,
     @Query('page') page = '1',
-    @Query('limit') limit = '10',
+    @Query('limit') limit = '8',
   ) {
     const user = req.user as { id: number };
     return this.booksService.getReadingsByUser(user.id, parseInt(page), parseInt(limit));
@@ -122,7 +122,7 @@ export class BooksController {
   async getUserDownloads(
     @Req() req: Request,
     @Query('page') page = '1',
-    @Query('limit') limit = '10',
+    @Query('limit') limit = '8',
   ) {
     const user = req.user as { id: number };
     return this.booksService.getDownloadsByUser(user.id, parseInt(page), parseInt(limit));
