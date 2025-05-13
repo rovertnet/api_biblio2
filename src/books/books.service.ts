@@ -106,7 +106,7 @@ export class BooksService {
     await this.readingRepo.save(record);
   }
 
-  async getReadingsByUser(userId: number, page = 1, limit = 10) {
+  async getReadingsByUser(userId: number, page = 1, limit = 8) {
     const skip = (page - 1) * limit;
     const [data, total] = await this.readingRepo.findAndCount({
       where: { userId },
@@ -125,7 +125,7 @@ export class BooksService {
     };
   }
 
-  async getDownloadsByUser(userId: number, page = 1, limit = 10) {
+  async getDownloadsByUser(userId: number, page = 1, limit = 8) {
     const skip = (page - 1) * limit;
     const [data, total] = await this.historyRepo.findAndCount({
       where: { userId },
