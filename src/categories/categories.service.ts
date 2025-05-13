@@ -1,7 +1,7 @@
 // src/categories/categories.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectRepository} from '@nestjs/typeorm';
+import { Repository, ILike } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -14,9 +14,14 @@ export class CategoriesService {
     private categoryRepo: Repository<Category>,
   ) {}
 
-  findAll() {
-    return this.categoryRepo.find();
+  async findAll(name?: string) {
+  if (name) {
+    return this.categoryRepo.find({
+      where: { name: ILike(`%${name}%`) },
+    });
   }
+  return this.categoryRepo.find();
+}
 
   create(dto: CreateCategoryDto) {
     const category = this.categoryRepo.create(dto);

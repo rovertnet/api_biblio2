@@ -1,5 +1,5 @@
 // src/categories/categories.controller.ts
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { JwtAuthGuard } from '../cammon/guards/jwt-auth.guard';
 import { RolesGuard } from '../cammon/guards/roles.guard';
@@ -13,8 +13,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  getAll(@Query('name') name?: string) {
+    return this.categoriesService.findAll(name);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
