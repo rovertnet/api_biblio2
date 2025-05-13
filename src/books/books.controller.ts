@@ -35,7 +35,7 @@ export class BooksController {
   @Get()
   async findAllBooks(
     @Query('page') page = '1',
-    @Query('limit') limit = '10',
+    @Query('limit') limit = '8',
     @Query('keyword') keyword = '',
     @Query('categoryId') categoryId?: string,
     @Query('sortBy') sortBy: 'title' | 'author' | 'createdAt' = 'createdAt',

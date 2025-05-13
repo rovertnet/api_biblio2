@@ -26,7 +26,7 @@ export class BooksService {
     keyword: string,
     categoryId?: number,
     page = 1,
-    limit = 10,
+    limit = 8,
     sortBy: 'title' | 'author' | 'createdAt' = 'createdAt',
     sortOrder: 'ASC' | 'DESC' = 'DESC',
   ) {
