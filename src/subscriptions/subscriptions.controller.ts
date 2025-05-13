@@ -7,6 +7,11 @@ import { JwtAuthGuard } from '../cammon/guards/jwt-auth.guard';
 export class SubscriptionsController {
   constructor(private readonly subscriptionService: SubscriptionsService) {}
 
+   @Post()
+  async subscribe(@Body() dto: CreateSubscriptionDto) {
+    return this.subscriptionsService.create(dto);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Request() req, @Body('type') type: 'monthly' | 'semiannual' | 'annual') {
