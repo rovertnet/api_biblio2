@@ -10,6 +10,9 @@ export class Category {
   @Column()
   name: string;
 
+  @Column({ nullable: true }) // ou { default: 'https://example.com/default.jpg' }
+  image: string;
+
   @OneToMany(() => Book, (book) => book.category)
   books: Book[];
 }

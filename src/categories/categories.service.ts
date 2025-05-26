@@ -24,9 +24,16 @@ export class CategoriesService {
 }
 
   create(dto: CreateCategoryDto) {
-    const category = this.categoryRepo.create(dto);
+    const defaultImage = 'https://source.unsplash.com/600x400/?computer,code';
+
+    const category = this.categoryRepo.create({
+      ...dto,
+      image: dto.image || defaultImage,
+    });
+
     return this.categoryRepo.save(category);
   }
+
 
   async update(id: number, dto: UpdateCategoryDto) {
     const category = await this.categoryRepo.findOneBy({ id });
