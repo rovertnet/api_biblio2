@@ -62,6 +62,45 @@ export class BooksService {
     };
   }
 
+  // src/books/books.service.ts
+
+async findBooksByCategory(
+  categoryId: number,
+  options: {
+    page: number;
+    limit: number;
+    search?: string;
+    sortBy?: string;
+    order?: 'ASC' | 'DESC';
+  },
+) {
+  const { page, limit, search, sortBy = 'title', order = 'ASC' } = options;
+
+  const query = this.bookRepo
+    .createQueryBuilder('book')
+    .leftJoinAndSelect('book.category', 'category')
+    .where('book.categoryId = :categoryId', { categoryId });
+
+  if (search) {
+    query.andWhere('book.title LIKE :search', { search: `%${search}%` });
+  }
+
+  const [books, total] = await query
+    .orderBy(`book.${sortBy}`, order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC')
+    .skip((page - 1) * limit)
+    .take(limit)
+    .getManyAndCount();
+
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    books,
+  };
+}
+
+
 
   async download(id: number): Promise<StreamableFile> {
     const book = await this.bookRepo.findOneBy({ id });

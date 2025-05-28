@@ -15,13 +15,13 @@ export class CategoriesService {
   ) {}
 
   async findAll(name?: string) {
-  if (name) {
-    return this.categoryRepo.find({
-      where: { name: ILike(`%${name}%`) },
-    });
+    if (name) {
+      return this.categoryRepo.find({
+        where: { name: ILike(`%${name}%`) },
+      });
+    }
+    return this.categoryRepo.find();
   }
-  return this.categoryRepo.find();
-}
 
   create(dto: CreateCategoryDto) {
     const defaultImage = 'https://source.unsplash.com/600x400/?computer,code';
@@ -33,7 +33,6 @@ export class CategoriesService {
 
     return this.categoryRepo.save(category);
   }
-
 
   async update(id: number, dto: UpdateCategoryDto) {
     const category = await this.categoryRepo.findOneBy({ id });

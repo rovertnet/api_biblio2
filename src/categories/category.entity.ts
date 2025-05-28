@@ -15,4 +15,7 @@ export class Category {
 
   @OneToMany(() => Book, (book) => book.category)
   books: Book[];
+
+  @Column()
+  categoryId: number;
 }

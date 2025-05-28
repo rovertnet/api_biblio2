@@ -51,6 +51,24 @@ export class BooksController {
     );
   }
 
+  @Get('categories/:id/books')
+  findBooksByCategory(
+    @Param('id') id: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('search') search?: string,
+    @Query('sortBy') sortBy = 'title',
+    @Query('order') order: 'ASC' | 'DESC' = 'ASC',
+  ) {
+    return this.booksService.findBooksByCategory(+id, {
+      page: +page,
+      limit: +limit,
+      search,
+      sortBy,
+      order,
+    });
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id/download')
   async download(
@@ -67,7 +85,7 @@ export class BooksController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('Admin')
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
